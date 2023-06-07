@@ -241,8 +241,8 @@ if __name__ == '__main__':
     parser.add_argument("--random_num", help="random number of seed", type=int)
     parser.add_argument("--sample_num", help="the number of samples", type=int)
     parser.add_argument("--save_path", help="the path of result file", type=str)
-    # args = parser.parse_args()
-    args = parser.parse_args(args=['--random_num', '3000', '--sample_num', '1000', '--save_path', './'])
+    args = parser.parse_args()
+    # args = parser.parse_args(args=['--random_num', '3000', '--sample_num', '1000', '--save_path', './'])
     np.random.seed(args.random_num)
     # for simulation setting
     simulate(args.sample_num, args.random_num, args.save_path)
