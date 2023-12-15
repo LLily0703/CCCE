@@ -100,13 +100,20 @@ def get_each_cce(x_person, unknown_node, X, buy_index, cal_dict, topk, W):
         if tmp_dict_key in cal_dict:
             post_tce = cal_dict[tmp_dict_key]
         else:
-            unknown_value = list(it.product(range(2), repeat=len(unknown_node)))
-            for tmp_value in unknown_value:
-                x_person[unknown_node] = tmp_value
+            if len(unknown_node):
+                unknown_value = list(it.product(range(2), repeat=len(unknown_node)))
+                for tmp_value in unknown_value:
+                    x_person[unknown_node] = tmp_value
+                    tmp_before = copy.deepcopy(x_person[ordered_vertices[:pos_one]])
+                    cond_prob = get_cond_prob(unknown_node, cond_index, tmp_value, x_person[cond_index], X)
+                    # print([pa],ordered_vertices[:pos_one])  CCE(Xs,y,x,X,topo,w,back_topo):
+                    # print(prob_CCE(list(pa),buy_index,tmp_before,X,ordered_vertices[:pos_one],x_person,ordered_vertices[pos_one+1:]))
+                    post_tce += cond_prob * prob_CCE(list(pa), buy_index, tmp_before, X, ordered_vertices[:pos_one],
+                                                     x_person, ordered_vertices[pos_one + 1:])
+            else:
                 tmp_before = copy.deepcopy(x_person[ordered_vertices[:pos_one]])
-                cond_prob = get_cond_prob(unknown_node, cond_index, tmp_value, x_person[cond_index], X)
-                post_tce += cond_prob * prob_CCE(list(pa), buy_index, tmp_before, X, ordered_vertices[:pos_one],
-                                                 x_person)
+                post_tce += prob_CCE(list(pa), buy_index, tmp_before, X, ordered_vertices[:pos_one], x_person,
+                                     ordered_vertices[pos_one + 1:])
             cal_dict[tmp_dict_key] = post_tce
         value += [post_tce]
     return couple_list, value

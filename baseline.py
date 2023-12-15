@@ -125,15 +125,23 @@ def get_each_tce(x_person, unknown_node, X, buy_index, cal_dict, W):
         if tmp_dict_key in cal_dict:
             post_tce = cal_dict[tmp_dict_key]
         else:
-            unknown_value = list(it.product(range(2), repeat=len(unknown_node)))
-            for tmp_value in unknown_value:
-                x_person[unknown_node] = tmp_value
+            if len(unknown_node):
+                unknown_value = list(it.product(range(2), repeat=len(unknown_node)))
+                for tmp_value in unknown_value:
+                    x_person[unknown_node] = tmp_value
+                    tmp_before = copy.deepcopy(x_person[ordered_vertices[:pos_one]])
+                    cond_prob = get_cond_prob(unknown_node, cond_index, list(tmp_value), x_person[cond_index],
+                                              X)
+                    post_tce += cond_prob * prob_postTCE(pa, buy_index, tmp_before, X,
+                                                         ordered_vertices[:pos_one])  # postTCE(Xk,y,x,X,topo)
+            else:
                 tmp_before = copy.deepcopy(x_person[ordered_vertices[:pos_one]])
-                cond_prob = get_cond_prob(unknown_node, cond_index, list(tmp_value), x_person[cond_index],X)
-                post_tce += cond_prob * prob_postTCE(pa, buy_index, tmp_before, X, ordered_vertices[:pos_one])
+                post_tce = prob_postTCE(pa, buy_index, tmp_before, X,
+                                        ordered_vertices[:pos_one])  # postTCE(Xk,y,x,X,topo)
             cal_dict[tmp_dict_key] = post_tce
         value += [post_tce]
     return parent_pos_one, value
+
 
 
 def get_each_counter_sample(reason_list, cf_value, B, counter_dict, random_or_not):
